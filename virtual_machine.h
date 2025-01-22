@@ -124,12 +124,12 @@ void vm_move_i(vm_t *vm, int dst, int org)
 
 void vm_move_s(vm_t *vm, int dst, int org)
 {
-	
+	vm->co1.s[dst] = vm->co1.s[org];
 }
 
 void vm_move_d(vm_t *vm, int dst, int org)
 {
-	
+	vm->co1.d[dst] = vm->co1.d[org];
 }
 
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
