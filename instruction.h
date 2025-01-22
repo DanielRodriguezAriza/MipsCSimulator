@@ -7,7 +7,7 @@ typedef enum {
 	SUB, SUBU, SUBI, SUBIU,
 	MOVE, MOVS, MOVD,
 	MFHI, MFLO,
-	MULT,
+	MULT, MUL,
 	SYSCALL,
 	NUM_OPCODES
 } opcode_t;

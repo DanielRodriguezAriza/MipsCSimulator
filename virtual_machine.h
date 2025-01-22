@@ -155,6 +155,12 @@ void vm_mult(vm_t *vm, int org1, int org2)
 	vm->lo = lo;
 }
 
+void vm_mul_i(vm_t *vm, int dst, int org1, int org2)
+{
+	vm_mult(vm, org1, org2);
+	vm_mflo(vm, dst);
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.buffer[0])
@@ -202,6 +208,9 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MULT:
 			vm_mult(vm, instruction.buffer[1], instruction.buffer[2]);
+			break;
+		case MUL:
+			vm_mul_i(vm, instruction.buffer[1], instruction.buffer[2], instruction.buffer[3]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
