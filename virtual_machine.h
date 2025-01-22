@@ -14,8 +14,11 @@
 #define vm_register_get(type, vm, idx) (*((type*)(&(vm->registers[(size_t)(idx)]))))
 
 typedef struct {
-	register_bank_integer registersi;
-	register_bank_float registersf;
+	register_bank_integer co0;
+	union {
+		register_bank_float s;
+		register_bank_double d;
+	} co1;
 	unsigned int pc;
 	unsigned int hi;
 	unsigned int lo;
