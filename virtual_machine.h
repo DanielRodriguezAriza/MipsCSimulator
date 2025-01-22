@@ -116,6 +116,16 @@ void vm_move_i(vm_t *vm, int dst, int org)
 	vm->registersi[dst] = vm->registersi[org];
 }
 
+void vm_move_s(vm_t *vm, int dst, int org)
+{
+	
+}
+
+void vm_move_d(vm_t *vm, int dst, int org)
+{
+	
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.buffer[0])
