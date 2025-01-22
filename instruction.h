@@ -5,7 +5,7 @@ typedef enum {
 	NOP = 0,
 	ADD, ADDU, ADDI, ADDIU,
 	SUB, SUBU, SUBI, SUBIU,
-	MOVE,
+	MOVE, MOVS, MOVD,
 	SYSCALL,
 	NUM_OPCODES
 } opcode_t;
