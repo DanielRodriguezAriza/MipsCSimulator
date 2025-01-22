@@ -68,7 +68,7 @@ typedef struct {
 } register_bank_integer;
 
 typedef struct {
-	double registers[32];
+	float registers[32]; // for double precission in MIPS32, we use register pairing, so $f0:$f1 is the pair used for the first double precission floating point "register", which consumes 2 single precission floating point registers. Not sure how real MIPS handles pairing if I pick an odd register number rather than pairing from even numbers, I'll figure this reading some documentation later I suppose.
 } register_bank_float;
 
 #endif
