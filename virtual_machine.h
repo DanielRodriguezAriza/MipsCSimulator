@@ -91,14 +91,29 @@ void vm_execute_syscall(vm_t *vm)
 	}
 }
 
-void vm_addi(vm_t *vm, size_t idx, int a, int b)
+void vm_add_i32(vm_t *vm, int dst, int a, int b)
 {
 	*((int*)(&(vm->registersi[idx]))) = a + b;
 }
 
-void vm_addu(vm_t *vm, size_t idx, unsigned int a, unsigned int b)
+void vm_add_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
 {
 	*((unsigned int*)(&(vm->registersi[idx]))) = a + b;
+}
+
+void vm_sub_i32(vm_t *vm, int dst, int a, int b)
+{
+	*((int*)(&(vm->registersi[idx]))) = a - b;
+}
+
+void vm_sub_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
+{
+	*((unsigned int*)(&(vm->registersi[idx]))) = a - b;
+}
+
+void vm_move_i(vm_t *vm, int dst, int org)
+{
+	vm->registersi[dst] = vm->registersi[org];
 }
 
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
@@ -108,31 +123,31 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case NOP:
 			break;
 		case ADD:
-			vm_set_register_i32(vm, instruction.buffer[1], vm_get_register_i32(vm, instruction.buffer[2]) + vm_get_register_i32(vm, instruction.buffer[3]));
+			vm_add_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
 			break;
 		case ADDU:
-			vm_set_register_u32(vm, instruction.buffer[1], vm_get_register_u32(vm, instruction.buffer[2]) + vm_get_register_u32(vm, instruction.buffer[3]));
+			vm_add_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
 			break;
 		case ADDI:
-			vm_set_register_i32(vm, instruction.buffer[1], vm_get_register_i32(vm, instruction.buffer[2]) + (int)instruction.buffer[3]);
+			vm_add_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]));
 			break;
 		case ADDIU:
-			vm_set_register_u32(vm, instruction.buffer[1], vm_get_register_u32(vm, instruction.buffer[2]) + (unsigned int)instruction.buffer[3]);
+			vm_add_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]));
 			break;
 		case SUB:
-			vm_set_register_i32(vm, instruction.buffer[1], vm_get_register_i32(vm, instruction.buffer[2]) - vm_get_register_i32(vm, instruction.buffer[3]));
+			vm_sub_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
 			break;
 		case SUBU:
-			vm_set_register_u32(vm, instruction.buffer[1], vm_get_register_u32(vm, instruction.buffer[2]) - vm_get_register_u32(vm, instruction.buffer[3]));
+			vm_sub_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
 			break;
 		case SUBI:
-			vm_set_register_i32(vm, instruction.buffer[1], vm_get_register_i32(vm, instruction.buffer[2]) - (int)instruction.buffer[3]);
+			vm_sub_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]);
 			break;
 		case SUBIU:
-			vm_set_register_u32(vm, instruction.buffer[1], vm_get_register_u32(vm, instruction.buffer[2]) - (unsigned int)instruction.buffer[3]);
+			vm_sub_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]);
 			break;
 		case MOVE:
-			vm->registers[instruction.buffer[1]] = vm->registers[instruction.buffer[2]];
+			vm_move_i(vm, instruction.buffer[1], instruction.buffer[2]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
