@@ -19,8 +19,8 @@ typedef struct {
 		unsigned int u[32];
 	} registers;
 	union {
-		register_bank_float s;
-		register_bank_double d;
+		float s[32];
+		double d[16];
 	} co1;
 	unsigned int pc;
 	unsigned int hi;
