@@ -14,7 +14,10 @@
 #define vm_register_get(type, vm, idx) (*((type*)(&(vm->registers[(size_t)(idx)]))))
 
 typedef struct {
-	register_bank_integer co0;
+	union {
+		int i[32];
+		unsigned int u[32];
+	} registers;
 	union {
 		register_bank_float s;
 		register_bank_double d;
@@ -96,27 +99,27 @@ void vm_execute_syscall(vm_t *vm)
 
 void vm_add_i32(vm_t *vm, int dst, int a, int b)
 {
-	*((int*)(&(vm->registersi[idx]))) = a + b;
+	vm->registers.i[idx] = a + b;
 }
 
 void vm_add_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
 {
-	*((unsigned int*)(&(vm->registersi[idx]))) = a + b;
+	vm->registers.u[idx]= a + b;
 }
 
 void vm_sub_i32(vm_t *vm, int dst, int a, int b)
 {
-	*((int*)(&(vm->registersi[idx]))) = a - b;
+	vm->registers.i[idx] = a - b;
 }
 
 void vm_sub_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
 {
-	*((unsigned int*)(&(vm->registersi[idx]))) = a - b;
+	vm->registers.u[idx] = a - b;
 }
 
 void vm_move_i(vm_t *vm, int dst, int org)
 {
-	vm->registersi[dst] = vm->registersi[org];
+	vm->registers.i[dst] = vm->registers.i[org];
 }
 
 void vm_move_s(vm_t *vm, int dst, int org)
