@@ -60,7 +60,7 @@ typedef enum {
 	$f29,
 	$f30,
 	$f31,
-	NUM_REGISTERS_SIMPLE
+	NUM_REGISTERS_FLOAT
 } register_names_float;
 
 #endif
