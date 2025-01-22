@@ -146,6 +146,15 @@ void vm_mflo(vm_t *vm, int dst)
 	vm->registers.u[dst]= vm->lo;
 }
 
+void vm_mult(vm_t *vm, int org1, int org2)
+{
+	long long int tmp = ((long long int)org1) * ((long long int)org2);
+	int lo = (int)(tmp);
+	int hi = (int)(tmp>>32);
+	vm->hi = hi;
+	vm->lo = lo;
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.buffer[0])
@@ -190,6 +199,9 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MFLO:
 			vm_mflo(vm, instruction.buffer[1]);
+			break;
+		case MULT:
+			vm_mult(vm, instruction.buffer[1], instruction.buffer[2]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
