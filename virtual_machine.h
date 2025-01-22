@@ -1,6 +1,8 @@
 #ifndef DRA_MIPS_C_VIRTUAL_MACHINE_H
 #define DRA_MIPS_C_VIRTUAL_MACHINE_H
 
+// TODO : Add checks for out of bounds memory accesses in case that the input ASM file contains a $-1 or some $9999 impossible to access register, tho maybe that should be performed at the compilation step, we'll see...
+
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -25,60 +27,62 @@ typedef struct {
 	unsigned int pc;
 	unsigned int hi;
 	unsigned int lo;
-	unsigned char memory[4096];
-	bool should_exit;
+	unsigned char memory[4096]; // TODO : Maybe 4 GB in size (full range of a 32 bit address space) and also make it so that the instructions go inside of this rather than as a separate pointer... that would allow self modifying programs to exist in the future, too!
+	bool should_exit; // bruh...
 } vm_t;
 
 void vm_execute_syscall(vm_t *vm)
 {
-	switch(vm->registers[$v0])
+	switch(vm->registers.i[$v0])
 	{
 		case SYSCALL_PRINT_INTEGER:
 		{
-			printf("%d", vm_register_get(int, vm, $a0));
+			printf("%d", vm->registers.i[$a0]);
 		}
 		break;
 		case SYSCALL_PRINT_FLOAT:
 		{
-			printf("%f", vm_register_get(float, vm, $a0));
+			// printf("%f", vm_register_get(float, vm, $a0)); // TODO : Implement. Read from correct co1 register for float printing.
 		}
 		break;
 		case SYSCALL_PRINT_STRING:
 		{
-			printf("%s", vm->memory[vm->registers[$a0]]);
+			printf("%s", (char*)&(vm->memory[vm->registers.u[$a0]]));
 		}
 		break;
 		case SYSCALL_READ_INTEGER:
 		{
 			int temp;
 			scanf("%d", &temp);
-			vm->registers[$v0] = temp;
+			vm->registers.i[$v0] = temp;
 		}
 		break;
 		case SYSCALL_READ_FLOAT:
 		{
-			float temp;
-			scanf("%f", &temp);
-			(*(float*)(&(vm->registers[$v0]))) = temp;
+			// TODO : Implement, etc...
+			// float temp;
+			// scanf("%f", &temp);
+			// (*(float*)(&(vm->registers[$v0]))) = temp;
 		}
 		case SYSCALL_READ_STRING:
 		{
 			// TODO: Add a check so that out of bounds memory writes would not crash the actual machine but rather throw some kind of "exception" or error for the program... so that we can keep running without the universe exploding...
-			char *buffer = (char *)&(vm->memory[vm->registers[$a0]]);
-			unsigned int buffer_size = (unsigned int)vm->registers[$a1];
-			scanf("%*s", buffer_size, buffer);
+			// TODO : Reimplement
+			// char *buffer = (char *)&(vm->memory[vm->registers[$a0]]);
+			// unsigned int buffer_size = (unsigned int)vm->registers[$a1];
+			// scanf("%*s", buffer_size, buffer);
 		}
 		break;
 		case SYSCALL_PRINT_CHARACTER:
 		{
-			printf("%c", (char)vm->registers[$a0]);
+			printf("%c", (char)vm->registers.i[$a0]);
 		}
 		break;
 		case SYSCALL_READ_CHARACTER:
 		{
 			char c;
 			scanf("%c", &c);
-			vm->registers[$v0] = c;
+			vm->registers.i[$v0] = c;
 		}
 		break;
 		case SYSCALL_EXIT:
@@ -89,7 +93,7 @@ void vm_execute_syscall(vm_t *vm)
 		break;
 		case SYSCALL_EXIT2:
 		{
-			int exit_code = vm->registers[$a0];
+			int exit_code = vm->registers.i[$a0];
 			vm->should_exit = true;
 			printf("\nProgram exited with code %d\n", exit_code);
 		}
@@ -99,22 +103,22 @@ void vm_execute_syscall(vm_t *vm)
 
 void vm_add_i32(vm_t *vm, int dst, int a, int b)
 {
-	vm->registers.i[idx] = a + b;
+	vm->registers.i[dst] = a + b;
 }
 
 void vm_add_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
 {
-	vm->registers.u[idx]= a + b;
+	vm->registers.u[dst]= a + b;
 }
 
 void vm_sub_i32(vm_t *vm, int dst, int a, int b)
 {
-	vm->registers.i[idx] = a - b;
+	vm->registers.i[dst] = a - b;
 }
 
 void vm_sub_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
 {
-	vm->registers.u[idx] = a - b;
+	vm->registers.u[dst] = a - b;
 }
 
 void vm_move_i(vm_t *vm, int dst, int org)
@@ -139,28 +143,28 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case NOP:
 			break;
 		case ADD:
-			vm_add_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
+			vm_add_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], vm->registers.i[instruction.buffer[3]]);
 			break;
 		case ADDU:
-			vm_add_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
+			vm_add_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], vm->registers.u[instruction.buffer[3]]);
 			break;
 		case ADDI:
-			vm_add_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]));
+			vm_add_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], (int)instruction.buffer[3]);
 			break;
 		case ADDIU:
-			vm_add_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]));
+			vm_add_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], (unsigned int)instruction.buffer[3]);
 			break;
 		case SUB:
-			vm_sub_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
+			vm_sub_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], vm->registers.i[instruction.buffer[3]]);
 			break;
 		case SUBU:
-			vm_sub_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], vm->registersi[instruction.buffer[3]]);
+			vm_sub_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], vm->registers.u[instruction.buffer[3]]);
 			break;
 		case SUBI:
-			vm_sub_i32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]);
+			vm_sub_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], (int)instruction.buffer[3]);
 			break;
 		case SUBIU:
-			vm_sub_u32(vm, instruction.buffer[1], vm->registersi[instruction.buffer[2]], instruction.buffer[3]);
+			vm_sub_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], (unsigned int)instruction.buffer[3]);
 			break;
 		case MOVE:
 			vm_move_i(vm, instruction.buffer[1], instruction.buffer[2]);
@@ -176,7 +180,7 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 	}
 	vm->pc += 1;
-	vm->registers[0] = 0;
+	vm->registers.i[0] = 0;
 }
 
 void vm_execute_instructions(vm_t *vm, instruction_t *instructions, size_t count)
