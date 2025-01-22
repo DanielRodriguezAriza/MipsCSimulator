@@ -165,6 +165,12 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case MOVE:
 			vm_move_i(vm, instruction.buffer[1], instruction.buffer[2]);
 			break;
+		case MOVS:
+			vm_move_s(vm, instruction.buffer[1], instruction.buffer[2]);
+			break;
+		case MOVD:
+			vm_move_d(vm, instruction.buffer[1], instruction.buffer[2]);
+			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
 			break;
