@@ -6,6 +6,7 @@ typedef enum {
 	ADD, ADDU, ADDI, ADDIU,
 	SUB, SUBU, SUBI, SUBIU,
 	MOVE, MOVS, MOVD,
+	MFHI, MFLO,
 	SYSCALL,
 	NUM_OPCODES
 } opcode_t;

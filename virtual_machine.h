@@ -136,6 +136,16 @@ void vm_move_d(vm_t *vm, int dst, int org)
 	vm->co1.d[dst] = vm->co1.d[org];
 }
 
+void vm_mfhi(vm_t *vm, int dst)
+{
+	vm->registers.u[dst] = vm->hi;
+}
+
+void vm_mflo(vm_t *vm, int dst)
+{
+	vm->registers.u[dst]= vm->lo;
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.buffer[0])
@@ -174,6 +184,12 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MOVD:
 			vm_move_d(vm, instruction.buffer[1], instruction.buffer[2]);
+			break;
+		case MFHI:
+			vm_mfhi(vm, instruction.buffer[1]);
+			break;
+		case MFLO:
+			vm_mflo(vm, instruction.buffer[1]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
