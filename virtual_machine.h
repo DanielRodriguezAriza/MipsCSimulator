@@ -230,6 +230,20 @@ void vm_mulu(vm_t *vm, int dst, int org1, int org2)
 	vm_mflo(vm, dst);
 }
 
+void vm_muli(vm_t *vm, int dst, int org1, int imm)
+{
+	vm->registers.i[$at] = imm;
+	vm_mult(vm, org1, $at);
+	vm_mflo(vm, dst);
+}
+
+void vm_muliu(vm_t *vm, int dst, int org1, unsigned int imm)
+{
+	vm->registers.u[$at] = imm;
+	vm_multu(vm, org1, $at);
+	vm_mflo(vm, dst);
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.opcode)
@@ -310,6 +324,12 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MULU:
 			vm_mulu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
+			break;
+		case MULI:
+			vm_muli(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
+			break;
+		case MULIU:
+			vm_muliu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);

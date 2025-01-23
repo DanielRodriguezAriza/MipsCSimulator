@@ -26,6 +26,8 @@
 
 */
 
+// NOTE : muli and muliu don't really exist as instructions, but MARS offers a non standard mul overload that works with immediates, so I do the same but with new extended instructions for clearness. Also note that certain instructions like the standard mul are already pseudo instructions, but we implement them all through a real instruction of their own as of now because it is easier to implement and deal with...
+
 typedef enum {
 	NOP = 0,
 	ADD, ADDU, ADDI, ADDIU,
@@ -34,7 +36,7 @@ typedef enum {
 	SUBS, SUBD,
 	MOVE, MOVS, MOVD,
 	MFHI, MFLO,
-	MULT, MULTU, MUL, MULU,
+	MULT, MULTU, MUL, MULU, MULI, MULIU,
 	SYSCALL,
 	NUM_OPCODES
 } opcode_t;
