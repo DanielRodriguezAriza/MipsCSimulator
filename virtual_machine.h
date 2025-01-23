@@ -249,6 +249,11 @@ void vm_li(vm_t *vm, int dst, int imm)
 	vm->registers.i[dst] = imm;
 }
 
+void vm_j(vm_t *vm, unsigned int target)
+{
+	vm->pc = target;
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.opcode)
@@ -338,6 +343,8 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case LI:
 			vm_li(vm, instruction.data[0], instruction.data[1]);
+		case J:
+			vm_j(vm, instruction.data[0]);
 		case SYSCALL:
 			vm_execute_syscall(vm);
 			break;

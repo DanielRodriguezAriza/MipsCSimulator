@@ -38,6 +38,7 @@ typedef enum {
 	MFHI, MFLO,
 	MULT, MULTU, MUL, MULU, MULI, MULIU,
 	LI,
+	J,
 	SYSCALL,
 	NUM_OPCODES
 } opcode_t;
