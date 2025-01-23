@@ -3,6 +3,8 @@
 
 // TODO : Add checks for out of bounds memory accesses in case that the input ASM file contains a $-1 or some $9999 impossible to access register, tho maybe that should be performed at the compilation step, we'll see...
 
+// TODO : Solve issue where the union we use for the floating point coprocessor doesn't really allow us to index into the 16 double registers the way we would on MIPS... vm.co1.s[2] corresponds to vm.co1.d[1], and that is correct in C, but from the point of view of MIPS we would still address it through $f2. This means that our addressing is going to give us problems, since the input values will reference $f2, whose internal value is 2, which would actually be pointing to vm.co1.d[2]... this can be shittily fixed by modifying all of the double functions to reference the co1 data through the float type with co1.s, and then type pune it through pointers rather than the union... but that sort of makes our co1 union kinda useless... also, need to figure out what happens when we operate over non aligned register boundaries when using doubles...
+
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -144,6 +146,26 @@ void vm_subiu(vm_t *vm, int dst, int org1, unsigned int imm)
 	vm->registers.u[dst] = vm->registers.u[org1] - imm;
 }
 
+void vm_adds(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->co1.s[dst] = vm->co1.s[org1] + vm->co1.s[org2];
+}
+
+void vm_addd(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->co1.d[dst] = vm->co1.d[org1] + vm->co1.d[org2];
+}
+
+void vm_subs(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->co1.s[dst] = vm->co1.s[org1] - vm->co1.s[org2];
+}
+
+void vm_subd(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->co1.d[dst] = vm->co1.d[org1] - vm->co1.d[org2];
+}
+
 void vm_move(vm_t *vm, int dst, int org)
 {
 	vm->registers.i[dst] = vm->registers.i[org];
@@ -232,12 +254,20 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			vm_subiu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDS:
+			vm_debug_log(vm, "add.s $f%d, $f%d, $f%d", instruction.data[0], instruction.data[1], instruction.data[2]);
+			vm_adds(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDD:
+			vm_debug_log(vm, "add.d $f%d, $f%d, $f%d", instruction.data[0], instruction.data[1], instruction.data[2]);
+			vm_addd(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUBS:
+			vm_debug_log(vm, "sub.s $f%d, $f%d, $f%d", instruction.data[0], instruction.data[1], instruction.data[2]);
+			vm_subs(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUBD:
+			vm_debug_log(vm, "sub.d $f%d, $f%d, $f%d", instruction.data[0], instruction.data[1], instruction.data[2]);
+			vm_subd(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case MOVE:
 			vm_move(vm, instruction.data[0], instruction.data[1]);
