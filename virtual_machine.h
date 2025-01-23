@@ -224,6 +224,12 @@ void vm_mul(vm_t *vm, int dst, int org1, int org2)
 	vm_mflo(vm, dst);
 }
 
+void vm_mulu(vm_t *vm, int dst, int org1, int org2)
+{
+	vm_multu(vm, org1, org2);
+	vm_mflo(vm, dst);
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.opcode)
@@ -301,6 +307,9 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MUL:
 			vm_mul(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
+			break;
+		case MULU:
+			vm_mulu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
