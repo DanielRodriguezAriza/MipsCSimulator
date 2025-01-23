@@ -144,17 +144,17 @@ void vm_subiu(vm_t *vm, int dst, int org1, unsigned int imm)
 	vm->registers.u[dst] = vm->registers.u[org1] - imm;
 }
 
-void vm_move_i(vm_t *vm, int dst, int org)
+void vm_move(vm_t *vm, int dst, int org)
 {
 	vm->registers.i[dst] = vm->registers.i[org];
 }
 
-void vm_move_s(vm_t *vm, int dst, int org)
+void vm_movs(vm_t *vm, int dst, int org)
 {
 	vm->co1.s[dst] = vm->co1.s[org];
 }
 
-void vm_move_d(vm_t *vm, int dst, int org)
+void vm_movd(vm_t *vm, int dst, int org)
 {
 	vm->co1.d[dst] = vm->co1.d[org];
 }
@@ -240,13 +240,13 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case SUBD:
 			break;
 		case MOVE:
-			vm_move_i(vm, instruction.data[0], instruction.data[1]);
+			vm_move(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MOVS:
-			vm_move_s(vm, instruction.data[0], instruction.data[1]);
+			vm_movs(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MOVD:
-			vm_move_d(vm, instruction.data[0], instruction.data[1]);
+			vm_movd(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MFHI:
 			vm_mfhi(vm, instruction.data[0]);
