@@ -163,54 +163,54 @@ void vm_mul_i(vm_t *vm, int dst, int org1, int org2)
 
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
-	switch(instruction.buffer[0])
+	switch(instruction.opcode)
 	{
 		case NOP:
 			break;
 		case ADD:
-			vm_add_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], vm->registers.i[instruction.buffer[3]]);
+			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
 			break;
 		case ADDU:
-			vm_add_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], vm->registers.u[instruction.buffer[3]]);
+			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
 			break;
 		case ADDI:
-			vm_add_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], (int)instruction.buffer[3]);
+			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
 			break;
 		case ADDIU:
-			vm_add_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], (unsigned int)instruction.buffer[3]);
+			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
 			break;
 		case SUB:
-			vm_sub_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], vm->registers.i[instruction.buffer[3]]);
+			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
 			break;
 		case SUBU:
-			vm_sub_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], vm->registers.u[instruction.buffer[3]]);
+			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
 			break;
 		case SUBI:
-			vm_sub_i32(vm, instruction.buffer[1], vm->registers.i[instruction.buffer[2]], (int)instruction.buffer[3]);
+			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
 			break;
 		case SUBIU:
-			vm_sub_u32(vm, instruction.buffer[1], vm->registers.u[instruction.buffer[2]], (unsigned int)instruction.buffer[3]);
+			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
 			break;
 		case MOVE:
-			vm_move_i(vm, instruction.buffer[1], instruction.buffer[2]);
+			vm_move_i(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MOVS:
-			vm_move_s(vm, instruction.buffer[1], instruction.buffer[2]);
+			vm_move_s(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MOVD:
-			vm_move_d(vm, instruction.buffer[1], instruction.buffer[2]);
+			vm_move_d(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MFHI:
-			vm_mfhi(vm, instruction.buffer[1]);
+			vm_mfhi(vm, instruction.data[0]);
 			break;
 		case MFLO:
-			vm_mflo(vm, instruction.buffer[1]);
+			vm_mflo(vm, instruction.data[0]);
 			break;
 		case MULT:
-			vm_mult(vm, instruction.buffer[1], instruction.buffer[2]);
+			vm_mult(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MUL:
-			vm_mul_i(vm, instruction.buffer[1], instruction.buffer[2], instruction.buffer[3]);
+			vm_mul_i(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
