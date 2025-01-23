@@ -148,9 +148,18 @@ void vm_mflo(vm_t *vm, int dst)
 
 void vm_mult(vm_t *vm, int org1, int org2)
 {
-	long long int tmp = ((long long int)org1) * ((long long int)org2);
+	long long int tmp = ((long long int)(org1)) * ((long long int)(org2));
 	int lo = (int)(tmp);
 	int hi = (int)(tmp>>32);
+	vm->hi = hi;
+	vm->lo = lo;
+}
+
+void vm_multu(vm_t *vm, unsigned int org1, unsigned int org2)
+{
+	unsigned long long int tmp = ((unsigned long long int)(org1)) * ((unsigned long long int)(org2));
+	unsigned int lo = (unsigned int)(tmp);
+	unsigned int hi = (unsigned int)(tmp>>32);
 	vm->hi = hi;
 	vm->lo = lo;
 }
@@ -208,6 +217,9 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case MULT:
 			vm_mult(vm, instruction.data[0], instruction.data[1]);
+			break;
+		case MULTU:
+			vm_multu(vm, instruction.data[0], instruction.data[1]);
 			break;
 		case MUL:
 			vm_mul_i(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
