@@ -254,6 +254,23 @@ void vm_j(vm_t *vm, unsigned int target)
 	vm->pc = target;
 }
 
+void vm_b(vm_t *vm, unsigned int target)
+{
+	vm_j(vm, target);
+}
+
+void vm_beq(vm_t *vm, int org1, int org2, unsigned int target)
+{
+	if(vm->registers.i[org1] == vm->registers.i[org2])
+		vm_j(vm, target);
+}
+
+void vm_bne(vm_t *vm, int org1, int org2, unsigned int target)
+{
+	if(vm->registers.i[org1] != vm->registers.i[org2])
+		vm_j(vm, target);
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.opcode)
@@ -343,8 +360,19 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case LI:
 			vm_li(vm, instruction.data[0], instruction.data[1]);
+			break;
 		case J:
 			vm_j(vm, instruction.data[0]);
+			break;
+		case B:
+			vm_b(vm, instruction.data[0]);
+			break;
+		case BEQ:
+			vm_beq(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
+			break;
+		case BNE:
+			vm_bne(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
+			break;
 		case SYSCALL:
 			vm_execute_syscall(vm);
 			break;
