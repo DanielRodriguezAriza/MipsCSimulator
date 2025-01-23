@@ -244,6 +244,11 @@ void vm_muliu(vm_t *vm, int dst, int org1, unsigned int imm)
 	vm_mflo(vm, dst);
 }
 
+void vm_li(vm_t *vm, int dst, int imm)
+{
+	vm->registers.i[dst] = imm;
+}
+
 void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 {
 	switch(instruction.opcode)
@@ -331,6 +336,8 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case MULIU:
 			vm_muliu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
+		case LI:
+			vm_li(vm, instruction.data[0], instruction.data[1]);
 		case SYSCALL:
 			vm_execute_syscall(vm);
 			break;
