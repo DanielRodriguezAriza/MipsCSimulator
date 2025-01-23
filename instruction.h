@@ -1,6 +1,31 @@
 #ifndef DRA_MIPS_C_INSTRUCTION_H
 #define DRA_MIPS_C_INSTRUCTION_H
 
+/*
+
+	List of instructions:
+	
+	// Generic
+	nop
+	
+	// Integer
+	add $r0, $r1, $r2 // signed integer sum with overflow. $r0 = $r1 + $r2
+	addu $r0, $r1, $r2 // unsigned integer sum with overflow. $ro = $r1 + $r2
+	
+	addi $r0, $r1, imm // signed integer immediate sum with overflow. $r0 = $r1 + imm
+	addiu $r0, $r1, imm // unsigned integer immediate sum with overflow. $r0 = $r1 + imm
+	
+	sub $r0, $r1, $r2 // signed integer subtraction with overflow. $r0 = $r1 - $r2
+	subu $r0, $r1, $r2 // unsigned integer subtraction with overflow. $r0 = $r1 - $r2
+	
+	subi $r0, $r1, imm // signed integer immediate subtraction with overflow. $r0 = $r1 - imm
+	subiu $r0, $r1, imm // unsigned integer immediate subtraction with overflow. $r0 = $r1 - imm
+	
+	// Float
+	
+
+*/
+
 typedef enum {
 	NOP = 0,
 	ADD, ADDU, ADDI, ADDIU,
