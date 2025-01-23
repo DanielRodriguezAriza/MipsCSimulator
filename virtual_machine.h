@@ -153,6 +153,9 @@ void vm_adds(vm_t *vm, int dst, int org1, int org2)
 
 void vm_addd(vm_t *vm, int dst, int org1, int org2)
 {
+	dst /= 2;
+	org1 /= 2;
+	org2 /= 2;
 	vm->co1.d[dst] = vm->co1.d[org1] + vm->co1.d[org2];
 }
 
@@ -163,6 +166,9 @@ void vm_subs(vm_t *vm, int dst, int org1, int org2)
 
 void vm_subd(vm_t *vm, int dst, int org1, int org2)
 {
+	dst /= 2;
+	org1 /= 2;
+	org2 /= 2;
 	vm->co1.d[dst] = vm->co1.d[org1] - vm->co1.d[org2];
 }
 
@@ -178,6 +184,9 @@ void vm_movs(vm_t *vm, int dst, int org)
 
 void vm_movd(vm_t *vm, int dst, int org)
 {
+	// Convert the $fx register indices into double register indices
+	dst /= 2;
+	org /= 2;
 	vm->co1.d[dst] = vm->co1.d[org];
 }
 
