@@ -3,6 +3,7 @@
 int main()
 {
 	vm_t vm;
+	vm.debug_enabled = true;
 	instruction_t instructions[] = {
 		{MOVE, $t0, $zero},
 		{MOVE, $t1, $zero},

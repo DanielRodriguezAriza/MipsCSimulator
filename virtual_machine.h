@@ -29,7 +29,10 @@ typedef struct {
 	unsigned int lo;
 	unsigned char memory[4096]; // TODO : Maybe 4 GB in size (full range of a 32 bit address space) and also make it so that the instructions go inside of this rather than as a separate pointer... that would allow self modifying programs to exist in the future, too!
 	bool should_exit; // bruh...
+	bool debug_enabled;
 } vm_t;
+
+#define vm_debug_log(vm, fmt, ...) do{if((vm)->debug_enabled){printf("[VM]: "); printf(fmt, ##__VA_ARGS__); printf("\n");}}while(0)
 
 void vm_execute_syscall(vm_t *vm)
 {
@@ -177,27 +180,35 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case NOP:
 			break;
 		case ADD:
+			vm_debug_log(vm, "add $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
 			break;
 		case ADDU:
+			vm_debug_log(vm, "addu $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
 			break;
 		case ADDI:
+			vm_debug_log(vm, "addi $%d, $%d, %d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
 			break;
 		case ADDIU:
+			vm_debug_log(vm, "addiu $%d, $%d, %u", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
 			break;
 		case SUB:
+			vm_debug_log(vm, "sub $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
 			break;
 		case SUBU:
+			vm_debug_log(vm, "subu $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
 			break;
 		case SUBI:
+			vm_debug_log(vm, "subi $%d, $%d, %d", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
 			break;
 		case SUBIU:
+			vm_debug_log(vm, "subiu $%d, $%d, %u", instruction.data[0], instruction.data[1], instruction.data[2]);
 			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
 			break;
 		case ADDS:
