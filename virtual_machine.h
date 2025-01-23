@@ -200,6 +200,14 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 		case SUBIU:
 			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
 			break;
+		case ADDS:
+			break;
+		case ADDD:
+			break;
+		case SUBS:
+			break;
+		case SUBD:
+			break;
 		case MOVE:
 			vm_move_i(vm, instruction.data[0], instruction.data[1]);
 			break;
