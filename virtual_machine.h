@@ -104,24 +104,44 @@ void vm_execute_syscall(vm_t *vm)
 	}
 }
 
-void vm_add_i32(vm_t *vm, int dst, int a, int b)
+void vm_add(vm_t *vm, int dst, int org1, int org2)
 {
-	vm->registers.i[dst] = a + b;
+	vm->registers.i[dst] = vm->registers.i[org1] + vm->registers.i[org2];
 }
 
-void vm_add_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
+void vm_addu(vm_t *vm, int dst, int org1, int org2)
 {
-	vm->registers.u[dst]= a + b;
+	vm->registers.u[dst] = vm->registers.u[org1] + vm->registers.u[org2];
 }
 
-void vm_sub_i32(vm_t *vm, int dst, int a, int b)
+void vm_addi(vm_t *vm, int dst, int org1, int imm)
 {
-	vm->registers.i[dst] = a - b;
+	vm->registers.i[dst] = vm->registers.i[org1] + imm;
 }
 
-void vm_sub_u32(vm_t *vm, int dst, unsigned int a, unsigned int b)
+void vm_addiu(vm_t *vm, int dst, int org1, unsigned int imm)
 {
-	vm->registers.u[dst] = a - b;
+	vm->registers.u[dst] = vm->registers.u[org1] + imm;
+}
+
+void vm_sub(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->registers.i[dst] = vm->registers.i[org1] - vm->registers.i[org2];
+}
+
+void vm_subu(vm_t *vm, int dst, int org1, int org2)
+{
+	vm->registers.u[dst] = vm->registers.u[org1] - vm->registers.u[org2];
+}
+
+void vm_subi(vm_t *vm, int dst, int org1, int imm)
+{
+	vm->registers.i[dst] = vm->registers.i[org1] - imm;
+}
+
+void vm_subiu(vm_t *vm, int dst, int org1, unsigned int imm)
+{
+	vm->registers.u[dst] = vm->registers.u[org1] - imm;
 }
 
 void vm_move_i(vm_t *vm, int dst, int org)
@@ -181,35 +201,35 @@ void vm_execute_instruction(vm_t *vm, instruction_t instruction)
 			break;
 		case ADD:
 			vm_debug_log(vm, "add $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
+			vm_add(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDU:
 			vm_debug_log(vm, "addu $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
+			vm_addu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDI:
 			vm_debug_log(vm, "addi $%d, $%d, %d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_add_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
+			vm_addi(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDIU:
 			vm_debug_log(vm, "addiu $%d, $%d, %u", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_add_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
+			vm_addiu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUB:
 			vm_debug_log(vm, "sub $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], vm->registers.i[instruction.data[2]]);
+			vm_sub(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUBU:
 			vm_debug_log(vm, "subu $%d, $%d, $%d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], vm->registers.u[instruction.data[2]]);
+			vm_subu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUBI:
 			vm_debug_log(vm, "subi $%d, $%d, %d", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_sub_i32(vm, instruction.data[0], vm->registers.i[instruction.data[1]], (int)instruction.data[2]);
+			vm_subi(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case SUBIU:
 			vm_debug_log(vm, "subiu $%d, $%d, %u", instruction.data[0], instruction.data[1], instruction.data[2]);
-			vm_sub_u32(vm, instruction.data[0], vm->registers.u[instruction.data[1]], (unsigned int)instruction.data[2]);
+			vm_subiu(vm, instruction.data[0], instruction.data[1], instruction.data[2]);
 			break;
 		case ADDS:
 			break;
